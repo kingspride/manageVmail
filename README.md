@@ -29,4 +29,4 @@ Simple Management Interface for Thomas' Leisters EMail Server Setup.
     ```
 4. create a `dbconnect.php` file from the template.
 5. create a cronjob for the quota display:    
-   `0 * * * * /var/www/webmail/manage/get_quota.sh`
+   `0 * * * * /bin/bash /var/www/webmail/manage/get_quota.sh`
