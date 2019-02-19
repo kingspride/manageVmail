@@ -2,8 +2,8 @@
 
 Simple Management Interface for Thomas' Leisters EMail Server Setup.
 
-> ### Attention!
-> **be careful with the admin interface. It has some security flaws.**
+**Attention!**    
+**be careful with the admin interface. It might have some security flaws after login.**
 
 ## Installation
 
