@@ -1,0 +1,12 @@
+<?php
+
+    if($include === true){
+        $dbc = new mysqli("host", "user", "password", "database");
+        if($dbc->connect_errno){
+            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            exit;
+        }
+    }else{
+        echo "I can break rules too. Good bye.";
+    }
+?>
