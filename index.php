@@ -1,4 +1,4 @@
-<!DCOTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
         <title>Mailserver Manager</title>
