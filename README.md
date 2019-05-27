@@ -2,26 +2,19 @@
 
 Simple Management Interface for Thomas' Leisters EMail Server Setup.
 
-**Attention!**    
-**be careful with the admin interface. It might have some security flaws after login.**
+**Warning!**    
+**NO SQL SECURITY MEASURES TAKEN!**
 
 ## Installation
 
-1. create a new table in the database:    
+1. add a new column to the accounts table:    
    ```SQL
-    CREATE TABLE `managers` (
-        `id` INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
-        `username` VARCHAR(30) NOT NULL,
-        `password` VARCHAR(50) NOT NULL,
-        PRIMARY KEY (`id`)
-    )
-    COLLATE='utf8_general_ci'
-    ENGINE=InnoDB
-    ;
+    ALTER TABLE `accounts`
+	ADD COLUMN `manager` TINYINT(1) NOT NULL DEFAULT '0' AFTER `sendonly`;
    ```
-2. create a manager user:    
+2. promote user to manager:    
    ```SQL
-   INSERT INTO managers (username, password) values ('madm','$SHA1_HASH');
+   UPDATE `vmail`.`accounts` SET `manager`='1' WHERE  `username`=`you` and `domain`=`yourdomain.tld`;
    ```
 3. create a database user separate from the vmail user:    
     ```SQL

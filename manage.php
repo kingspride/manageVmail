@@ -26,6 +26,7 @@
     <a href="https://<?= $_SERVER["HTTP_HOST"] ?>">Back to Roundcube</a><br>
     <h1>Manage Mailserver</h1>
     <?php
+        error_reporting(E_ALL & ~E_NOTICE);
         $scriptfilename = basename($_SERVER["SCRIPT_FILENAME"]);
 
         session_start();
@@ -40,12 +41,19 @@
 
         if(!$_SESSION['user']){
             if($_POST['username'] && $_POST['passwd']){
-                $login_request = $dbc->query("select if(username is not NULL, 'success', 'fail') as login_status from managers where username = '$_POST[username]' and password = '". hash("SHA1", $_POST['passwd']) ."';");
-                $login_status = $login_request->fetch_assoc();
-                if($login_status['login_status'] === "success"){
-                    $_SESSION['user'] = $_POST['username'];
-                    header("Location: $scriptfilename?function=overview");
-                    exit;
+                $username = explode("@", $_POST['username'])[0];
+                $domain = explode("@", $_POST['username'])[1];
+                $login = $dbc->query("SELECT password FROM accounts WHERE username = '$username' AND domain = '$domain' AND manager = 1;");
+                if($login->num_rows > 0){
+                    $passhash = $login->fetch_assoc()["password"];
+                    $checkpass = exec("doveadm pw -s SHA512-CRYPT -t '$passhash' -p $_POST[passwd]");
+                    if(strpos($checkpass,"verified")){
+                        $_SESSION['user'] = $_POST['username'];
+                        header("Location: $scriptfilename?function=overview");
+                        exit;
+                    }else{
+                        echo "wrong username or password. try again.<br>";
+                    }
                 }else{
                     echo "wrong username or password. try again.<br>";
                 }
@@ -115,6 +123,7 @@
                             echo "<tr><td>quota: </td><td><input type='number' name='quota' value='2048' placeholder='2048'> MB</td></tr>";
                             echo "<tr><td>enabled: </td><td><input checked type='radio' name='enabled' value='1'> Yes | <input type='radio' name='enabled' value='0'> No</td></tr>";
                             echo "<tr><td>sendonly: </td><td><input type='radio' name='sendonly' value='1'> Yes | <input checked type='radio' name='sendonly' value='0'> No</td></tr>";
+                            echo "<tr><td>manager: </td><td><input type='radio' name='manager' value='1'> Yes | <input checked type='radio' name='manager' value='0'> No</td></tr>";
                             echo "<tr><td colspan='2' style='text-align: right'><input type='submit' name='save' value='save'></td></tr>";
                             break;
 
@@ -200,11 +209,11 @@
                             echo "<tr><td>$desc:</td>";
                             $checked0 = $checked1 = "";
                             $desc == "id" ? $disabled = "disabled" : $disabled = "";
-                            if($desc == "enabled" || $desc == "sendonly"){
+                            if($desc == "enabled" || $desc == "sendonly" || $desc == "manager"){
                                 $field == 1 ? $checked1 = "checked" : $checked0 = "checked";
                                 echo "<td><input $checked1 type='radio' name='$desc' value='1'> Yes | 
                                           <input $checked0 type='radio' name='$desc' value='0'> No</td>";
-			    }else{
+			                }else{
                                 echo "<td><input $disabled style='width: 400px' type='text' name='$desc' value='$field'></td>";
                             }
                             echo "</tr>";
