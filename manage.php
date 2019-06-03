@@ -249,7 +249,7 @@
                     echo "
                         <h3>Accounts</h3>
                         <table>
-                        <tr><td><b>Account</b></td><td><b>enabled</b></td><td><b>sendonly</b></td><td><b>Storage usage</b></td><td><b>Messages</b></td></tr>
+                        <tr><td><b>Account</b></td><td><b>Manager</b></td><td><b>enabled</b></td><td><b>sendonly</b></td><td><b>Storage usage</b></td><td><b>Messages</b></td></tr>
                     ";
                     $quotastr = "";
                     foreach($get_accounts as $account){
@@ -260,10 +260,12 @@
                                 $messagestr = $quota["Value"] . " of " . $quota["Limit"]. " (" . $quota["%"] . "%)";
                             }
                         }
+			$manager = $account['manager'] ? "Y" : "N";
                         $enabled = $account['enabled'] ? "Y" : "N";
                         $sendonly = $account['sendonly'] ? "Y" : "N";
                         echo "<tr><td><a href='$scriptfilename?function=modify&table=accounts&id=$account[id]'>$account[username]@$account[domain]</a></td>
-                              <td>$enabled</td>
+                              <td>$manager</td>
+			      <td>$enabled</td>
                               <td>$sendonly</td>
                               <td>$quotastr</td>
                               <td>$messagestr</td></tr>";
