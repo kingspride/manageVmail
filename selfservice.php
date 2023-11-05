@@ -4,6 +4,9 @@
 <head>
     <title>User Selfservice</title>
     <meta name="viewport" content="width=device-width, initial-scale=0.8">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
     <style>
         a{
             color: #728521;
@@ -185,14 +188,14 @@
                 case "setpasswd":
                     //submit
                     if($_POST['setpassword'] === "save"){
-                        foreach($POST as $i=>$post){
+			$postdata = [];
+                        foreach($_POST as $i=>$post){
                             $postdata[$i] = htmlentities($post);
                         }
-                        var_dump($postdata);
-                        exit;
                         $newhash = exec("doveadm pw -s SHA512-CRYPT -p $_POST[password]");
                         $res = $dbc->query("update accounts set password='$newhash' where id = $userdata[id];");
                         if($res->error){
+				echo "bist du hier stehengeblieben?";
                             echo $res->error;
                             exit;
                         }
